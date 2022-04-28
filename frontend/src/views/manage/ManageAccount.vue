@@ -4,12 +4,10 @@
       <div class="columns">
         <div class="column is-2">
           <span class="is-inline-flex">
-            <figure class="image is-32x32 my-auto mb-5">
-              <img
-                class="is-rounded"
-                :src="`https://bulma.io/images/placeholders/128x128.png`"
-              />
-            </figure>
+            <span class="icon is-medium">
+               <i class="fas fa-user has-text-info"></i>
+            </span>
+                  
             <p class="mt-1">
               <strong style="width: 300px; margin-left: 10px">
                 &nbsp; {{ blogs.first_name }}</strong
@@ -306,6 +304,7 @@ export default {
           this.surname = this.blogs.last_name;
           this.tel1 = this.blogs.mobile;
           this.tel2 = this.blogs.phone2;
+          this.address = this.blogs.address;
           this.email = this.blogs.email;
           this.password = this.blogs.password;
         })

@@ -54,6 +54,16 @@ const routes = [
     name: 'parcel',
     component: () => import('../views/parcel/Parcel.vue')
   },
+  {
+    path: '/Manageinvoice',
+    name: 'manageinvoice',
+    component: () => import('../views/manage/ManageInvoice.vue')
+  },
+  {
+    path: '/invoice',
+    name: 'invoice',
+    component: () => import('../views/manage/Invoice.vue')
+  },
 ]
 
 const router = new VueRouter({ routes })
