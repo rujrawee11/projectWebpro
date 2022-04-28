@@ -4,7 +4,7 @@
       <div class="hero">
         <div class="columns is-centered">
           <span
-            v-if="isEmpOwner(parcel)"
+            v-if="isEmpOwner()"
             class="icon is-large"
             style="margin-top: 6px; margin-left: 1%"
             @click="addList"
@@ -181,10 +181,13 @@
       </div>
 
       <br />
-      <div class="content mb-1" v-if="isTenantOwner(parcel)">
+      <div class="content mb-1" v-if="isTenantOwner()">
         <div class="field has-addons">
           <p class="control">
-            <button :class="['button', showAllParcel == 1 ? 'is-info' : '']" @click="showMyParcel">
+            <button
+              :class="['button', showAllParcel == 1 ? 'is-info' : '']"
+              @click="showMyParcel"
+            >
               <span class="icon is-small">
                 <i class="fas fa-user"></i>
               </span>
@@ -192,7 +195,10 @@
             </button>
           </p>
           <p class="control">
-            <button :class="['button', showAllParcel == -1 ? 'is-info' : '']" @click="showAllParcel = -1">
+            <button
+              :class="['button', showAllParcel == -1 ? 'is-info' : '']"
+              @click="showAllParcel = -1"
+            >
               <span class="icon is-small">
                 <i class="fas fa-bell"></i>
               </span>
@@ -202,110 +208,135 @@
         </div>
       </div>
 
-      <div :class="['content mt-2', showAllParcel == -1 ? '' : 'is-hidden']" >
-        <table class="table is-striped is-narrow has-text-centered">
-          <thead>
-            <tr style="background-color: #ffbac8; height: 10%">
-              <th>ลำดับ</th>
-              <th>ชื่อผู้รับ</th>
-              <th>เลขห้อง</th>
-              <th>บริษัทขนส่ง</th>
-              <th>วันที่พัสดุมาถึง</th>
-              <th>วันที่รับพัสดุ</th>
-              <th>สถานะการรับพัสดุ</th>
-              <th v-if="isEmpOwner(parcel)"></th>
-            </tr>
-          </thead>
-          <tbody style="background-color: #ffecdc">
-            <tr v-for="(parcel, index) in blogs" :key="index">
-              <td class="pt-3">{{ index + 1 }}</td>
-              <td class="pt-3">{{ parcel.p_name }}</td>
-              <td class="pt-3">{{ parcel.room_number }}</td>
-              <td class="pt-3">{{ parcel.transport_name }}</td>
-              <td class="pt-3">{{ parcel.sent_date.slice(0, 10) }}</td>
-              <td class="pt-3" v-if="parcel.receive_date != null">
-                {{ parcel.receive_date.slice(0, 10) }}
-              </td>
-              <td
-                class="pt-3"
-                v-if="parcel.receive_date == null || parcel.receive_date == ''"
-              >
-                -
-              </td>
-              <td class="pt-3">{{ parcel.status }}</td>
-              
-              <td v-if="isEmpOwner(parcel)">
-                <div class="level-centered pt-3">
-                  <span class="icon is-small" @click="editTask(parcel, index)">
-                    <i class="fas fa-edit"></i>
-                  </span>
-                  <span
-                    class="icon is-small ml-5"
-                    @click="deleteTask(parcel, index)"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </span>
+      <div :class="['content mt-2', showAllParcel == -1 ? '' : 'is-hidden']">
+        <div class="p-4" style="background-color: #ff91a8; color: white">
+          <article class="media">
+            <div class="media-content">
+              <div class="content">
+                <div class="columns" style="font-weight: bold">
+                  <div class="column">ลำดับ</div>
+                  <div class="column">ชื่อผู้รับ</div>
+                  <div class="column">เลขห้อง</div>
+                  <div class="column">บริษัทขนส่ง</div>
+                  <div class="column">วันที่พัสดุมาถึง</div>
+                  <div class="column">วันที่รับพัสดุ</div>
+                  <div class="column">สถานะการรับพัสดุ</div>
+                  <div class="column" v-if="isEmpOwner()"></div>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div
+          v-for="(parcel, index) in blogs"
+          :class="[
+            'card mt-3 p-4',
+            parcel.status == 'not_received'
+              ? 'has-background-danger-light'
+              : '',
+          ]"
+          style="border: solid 1px #ff91a8"
+          :key="parcel.id"
+        >
+          <div class="columns">
+            <div class="column pt-3">{{ index + 1 }}</div>
+            <div class="column pt-3">{{ parcel.p_name }}</div>
+            <div class="column pt-3">{{ parcel.room_number }}</div>
+            <div class="column pt-3">{{ parcel.transport_name }}</div>
+            <div class="column pt-3">{{ parcel.sent_date.slice(0, 10) }}</div>
+            <div class="column pt-3" v-if="parcel.receive_date != null">
+              {{ parcel.receive_date.slice(0, 10) }}
+            </div>
+            <div
+              class="column pt-3"
+              v-if="parcel.receive_date == null || parcel.receive_date == ''"
+            >
+              -
+            </div>
+            <div class="column pt-3">{{ parcel.status }}</div>
+
+            <div class="column pt-3" v-if="isEmpOwner(parcel)">
+              <div class="level-centered pr-1">
+                <span class="icon is-small" @click="editTask(parcel, index)">
+                  <i class="fas fa-edit"></i>
+                </span>
+                <span
+                  class="icon is-small ml-5"
+                  @click="deleteTask(parcel, index)"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div :class="['content mt-2', showAllParcel == 1 ? '' : 'is-hidden']" >
-        <table class="table is-striped is-narrow has-text-centered">
-          <thead>
-            <tr style="background-color: #ffbac8; height: 10%">
-              <th>ลำดับ</th>
-              <th>ชื่อผู้รับ</th>
-              <th>เลขห้อง</th>
-              <th>บริษัทขนส่ง</th>
-              <th>วันที่พัสดุมาถึง</th>
-              <th>วันที่รับพัสดุ</th>
-              <th>สถานะการรับพัสดุ</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody style="background-color: #ffecdc">
-            <tr v-for="(parcel, index) in filterMyParcel" :key="index">
-              <td class="pt-3">{{ index + 1 }}</td>
-              <td class="pt-3">{{ parcel.p_name }}</td>
-              <td class="pt-3">{{ parcel.room_number }}</td>
-              <td class="pt-3">{{ parcel.transport_name }}</td>
-              <td class="pt-3">{{ parcel.sent_date.slice(0, 10) }}</td>
-              <td class="pt-3" v-if="parcel.receive_date != null">
-                {{ parcel.receive_date.slice(0, 10) }}
-              </td>
-              <td
-                class="pt-3"
-                v-if="parcel.receive_date == null || parcel.receive_date == ''"
-              >
-                -
-              </td>
-              <td class="pt-3">{{ parcel.status }}</td>
-              <td v-if="isTenantOwner(parcel)">
-                <span
-                  :class="['button is-small is-rounded', ' is-info']"
-                  @click.prevent="confirmParcel(parcel, index)"
-                  >ยืนยันรับพัสดุ</span
-                >
-              </td>
-              <td v-if="isEmpOwner(parcel)">
-                <div class="level-centered pt-3">
-                  <span class="icon is-small" @click="editTask(parcel, index)">
-                    <i class="fas fa-edit"></i>
-                  </span>
-                  <span
-                    class="icon is-small ml-5"
-                    @click="deleteTask(parcel, index)"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </span>
+      <div :class="['content mt-2', showAllParcel == 1 ? '' : 'is-hidden']">
+        <div class="p-4" style="background-color: #d4abeb; color: white">
+          <article class="media">
+            <div class="media-content">
+              <div class="content">
+                <div class="columns" style="font-weight: bold">
+                  <div class="column">ลำดับ</div>
+                  <div class="column">ชื่อผู้รับ</div>
+                  <div class="column">เลขห้อง</div>
+                  <div class="column">บริษัทขนส่ง</div>
+                  <div class="column">วันที่พัสดุมาถึง</div>
+                  <div class="column">วันที่รับพัสดุ</div>
+                  <div class="column">สถานะการรับพัสดุ</div>
+                  <div class="column"></div>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div
+          v-for="(parcel, index) in filterMyParcel"
+          :class="[
+            'card mt-3 p-4',
+            parcel.status == 'not_received'
+              ? 'has-background-danger-light'
+              : '',
+          ]"
+          style="border: solid 1px #d4abeb"
+          :key="parcel.id"
+        >
+          <div class="columns">
+            <div class="column pt-3">{{ index + 1 }}</div>
+            <div class="column pt-3">{{ parcel.p_name }}</div>
+            <div class="column pt-3">{{ parcel.room_number }}</div>
+            <div class="column pt-3">{{ parcel.transport_name }}</div>
+            <div class="column pt-3">{{ parcel.sent_date.slice(0, 10) }}</div>
+            <div class="column pt-3" v-if="parcel.receive_date != null">
+              {{ parcel.receive_date.slice(0, 10) }}
+            </div>
+            <div
+              class="column pt-3"
+              v-if="parcel.receive_date == null || parcel.receive_date == ''"
+            >
+              -
+            </div>
+            <div class="column pt-3">{{ parcel.status }}</div>
+
+            <div class="column pt-3" v-if="isTenantOwner(parcel)">
+              <span
+                v-if="parcel.status == 'not_received'"
+                :class="['button is-small is-rounded', 'is-info']"
+                @click.prevent="confirmParcel(parcel, index)"
+                >ยืนยันรับพัสดุ</span
+              >
+              <span
+                v-if="parcel.status == 'received'"
+                :class="['button is-small is-rounded', 'is-enabled']"
+                
+                >รับพัสดุแล้ว</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="modal" :class="{ 'is-active': showEditModal }">
@@ -457,7 +488,7 @@
         <div class="modal-card">
           <header class="modal-card-head has-background-info">
             <p class="modal-card-title has-text-centered has-text-white">
-              Delete Task
+              Delete Parcel
             </p>
             <button
               class="delete"
@@ -467,7 +498,7 @@
           </header>
 
           <section class="modal-card-body">
-            คุณแน่ใจนะ! ว่าต้องการลบรายการพัสดุที่ {{ deleteTaskId }} ?
+            คุณแน่ใจนะ! ว่าต้องการลบรายการพัสดุที่ {{ deleteIndex }} ?
           </section>
           <footer class="modal-card-foot" style="padding-left: 35%">
             <button
@@ -490,20 +521,21 @@
         <div class="modal-card">
           <header class="modal-card-head has-background-info">
             <p class="modal-card-title has-text-centered has-text-white">
-              Delete Task
+              Confirm Parcel
             </p>
             <button
-              class="delete"
+             class="delete"
               aria-label="close"
               @click="showConfirmModal = false"
             ></button>
           </header>
 
           <section class="modal-card-body">
-            คุณแน่ใจนะ! ว่าต้องการลบรายการพัสดุที่ {{ deleteTaskId }} ?
+             ยืนยันได้รับพัสดุเรียบร้อยแล้ว
           </section>
           <footer class="modal-card-foot" style="padding-left: 35%">
             <button
+              
               class="button is-danger"
               type="submit"
               @click="confirmParcelTenant"
@@ -619,11 +651,13 @@ export default {
         })
         .then((response) => {
           this.blogs = response.data;
-          this.filterMyParcel = response.data.filter((e) => e.tenant_id === this.user.id);
-          for (var i = 0; i < this.blogs.length; i++) {
+          this.filterMyParcel = response.data.filter(
+            (e) => e.tenant_id === this.user.id
+          );
+          /* for (var i = 0; i < this.blogs.length; i++) {
             var date = response.data[i].sent_date;
             this.blogs[i].sent_date = date.toLocaleString();
-          }
+          } */
         })
         .catch((error) => {
           this.error2 = error.response.data.message;
@@ -632,9 +666,8 @@ export default {
     addList() {
       this.showAddModal = true;
     },
-    showMyParcel (){
+    showMyParcel() {
       this.showAllParcel = 1;
-
     },
     editTask(parcel, index) {
       this.showEditModal = true;
@@ -669,13 +702,14 @@ export default {
           this.blogs[this.confirmTaskIndex].status = response.data.status;
           this.filterMyParcel[this.confirmTaskIndex].receive_date =
             response.data.receive_date;
-          this.filterMyParcel[this.confirmTaskIndex].status = response.data.status;
+          this.filterMyParcel[this.confirmTaskIndex].status =
+            response.data.status;
         })
         .catch((error) => {
           this.error = error.message;
         });
     },
-    isTenantOwner(parcel) {
+    isTenantOwner() {
       if (this.user.role === "tenant") {
         return true;
       } else if (!this.user) {
@@ -683,7 +717,7 @@ export default {
       }
       //return parcel.create_by_id === this.user.id;
     },
-    isEmpOwner(parcel) {
+    isEmpOwner() {
       if (this.user.role === "admin") {
         return true;
       } else if (!this.user) {
