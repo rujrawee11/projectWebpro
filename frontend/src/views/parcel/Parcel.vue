@@ -47,6 +47,21 @@
           </header>
 
           <section class="modal-card-body">
+            <div
+              v-if="error"
+              class="
+                field-label
+                is-normal
+                px-3
+                py-2
+                mb-3
+                has-text-danger-dark
+                has-background-danger-light
+                has-text-centered
+              "
+            >
+              {{ error_room }}
+            </div>
             <div class="columns mr-6">
               <div class="column">
                 <div class="field is-horizontal">
@@ -181,30 +196,48 @@
       </div>
 
       <br />
+
       <div class="content mb-1" v-if="isTenantOwner()">
-        <div class="field has-addons">
-          <p class="control">
-            <button
-              :class="['button', showAllParcel == 1 ? 'is-info' : '']"
-              @click="showMyParcel"
+        <div class="columns">
+          <div class="field has-addons mt-3">
+            <p class="control">
+              <button
+                :class="['button', showAllParcel == 1 ? 'is-info' : '']"
+                @click="showMyParcel"
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-user"></i>
+                </span>
+                <span>รายการพัสดุของฉัน</span>
+              </button>
+            </p>
+            <p class="control">
+              <button
+                :class="['button', showAllParcel == -1 ? 'is-info' : '']"
+                @click="showAllParcel = -1"
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-bell"></i>
+                </span>
+                <span>รายการพัสดุทั้งหมด</span>
+              </button>
+            </p>
+          </div>
+          <div class="column is-offset-5" v-if="showAllParcel == -1">
+            <div
+              class="p-2 has-text-centered"
+              style="border: 2px solid #95c9e8" @click="sortedDate" 
             >
-              <span class="icon is-small">
-                <i class="fas fa-user"></i>
-              </span>
-              <span>รายการพัสดุของฉัน</span>
-            </button>
-          </p>
-          <p class="control">
-            <button
-              :class="['button', showAllParcel == -1 ? 'is-info' : '']"
-              @click="showAllParcel = -1"
-            >
-              <span class="icon is-small">
-                <i class="fas fa-bell"></i>
-              </span>
-              <span>รายการพัสดุทั้งหมด</span>
-            </button>
-          </p>
+              <label class="radio">
+                <input type="radio" value="sortDuedate" v-model="typeSorted" />
+                Sort sent date
+              </label>
+              <label class="radio">
+                <input type="radio" value="sortNotreceived" v-model="typeSorted"  />
+                Sort not_received
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -256,7 +289,7 @@
             </div>
             <div class="column pt-3">{{ parcel.status }}</div>
 
-            <div class="column pt-3" v-if="isEmpOwner(parcel)">
+            <div class="column pt-3" v-if="isEmpOwner()">
               <div class="level-centered pr-1">
                 <span class="icon is-small" @click="editTask(parcel, index)">
                   <i class="fas fa-edit"></i>
@@ -294,7 +327,7 @@
         </div>
 
         <div
-          v-for="(parcel, index) in filterMyParcel"
+          v-for="(parcel, index) in filteredTasks"
           :class="[
             'card mt-3 p-4',
             parcel.status == 'not_received'
@@ -331,7 +364,6 @@
               <span
                 v-if="parcel.status == 'received'"
                 :class="['button is-small is-rounded', 'is-enabled']"
-                
                 >รับพัสดุแล้ว</span
               >
             </div>
@@ -524,18 +556,17 @@
               Confirm Parcel
             </p>
             <button
-             class="delete"
+              class="delete"
               aria-label="close"
               @click="showConfirmModal = false"
             ></button>
           </header>
 
           <section class="modal-card-body">
-             ยืนยันได้รับพัสดุเรียบร้อยแล้ว
+            ยืนยันได้รับพัสดุเรียบร้อยแล้ว
           </section>
           <footer class="modal-card-foot" style="padding-left: 35%">
             <button
-              
               class="button is-danger"
               type="submit"
               @click="confirmParcelTenant"
@@ -601,6 +632,9 @@ export default {
       },
       showAllParcel: -1,
       filterMyParcel: {},
+      filteredTasks: [],
+      error_room: "",
+      typeSorted: "sortNotreceived"
     };
   },
   mounted() {
@@ -642,6 +676,41 @@ export default {
     },
   },
   methods: {
+    sortedDate() {
+      if (this.typeSorted == 'sortDuedate'){
+      this.blogs = this.blogs.sort((a, b) => {
+        if (a.sent_date == '' && b.sent_date != '') {
+              return 1
+            } else if (a.sent_date != '' && b.sent_date == '') {
+              return -1
+            } else {
+              if (a.sent_date < b.sent_date) {
+                return -1
+              } else if (a.sent_date < b.sent_date) {
+                return 1
+              } else {
+                return 0
+              }
+            }
+      });
+      }else if(this.typeSorted == 'sortNotreceived'){
+        this.blogs = this.blogs.sort((a, b) => {
+            if (a.status == "received" && b.status != "received") {
+              return 1;
+            } else if (a.status != "received" && b.status == "received") {
+              return -1;
+            } else {
+              if (a.status == "received" || b.status == "received") {
+                return -1;
+              } else if (a.status != "received" || b.status != "received") {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+          });
+      }
+    },
     getBlogDetail() {
       axios
         .get(`http://localhost:5000/parcel`, {
@@ -651,9 +720,41 @@ export default {
         })
         .then((response) => {
           this.blogs = response.data;
-          this.filterMyParcel = response.data.filter(
+          this.blogs = this.blogs.sort((a, b) => {
+            if (a.status == "received" && b.status != "received") {
+              return 1;
+            } else if (a.status != "received" && b.status == "received") {
+              return -1;
+            } else {
+              if (a.status == "received" || b.status == "received") {
+                return -1;
+              } else if (a.status != "received" || b.status != "received") {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+          });
+
+          this.filteredTasks = this.filterMyParcel = response.data.filter(
             (e) => e.tenant_id === this.user.id
           );
+          this.filteredTasks = this.filteredTasks.sort((a, b) => {
+            if (a.status == "received" && b.status != "received") {
+              return 1;
+            } else if (a.status != "received" && b.status == "received") {
+              return -1;
+            } else {
+              if (a.status == "received" || b.status == "received") {
+                return -1;
+              } else if (a.status != "received" || b.status != "received") {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+          });
+
           /* for (var i = 0; i < this.blogs.length; i++) {
             var date = response.data[i].sent_date;
             this.blogs[i].sent_date = date.toLocaleString();
@@ -696,6 +797,7 @@ export default {
           status: "received",
         })
         .then((response) => {
+          this.getBlogDetail();
           this.showConfirmModal = false;
           this.blogs[this.confirmTaskIndex].receive_date =
             response.data.receive_date;
@@ -770,7 +872,7 @@ export default {
           this.duedate = null;
         })
         .catch((error) => {
-          this.error = error.message;
+          this.error_room = error.response.data;
         });
     },
     cancleAddModal() {
