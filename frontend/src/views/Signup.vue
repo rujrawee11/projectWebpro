@@ -161,7 +161,9 @@
             </template>
           </div>
 
-          <button class="button is-primary is-fullwidth" @click="submit()">Sign Up</button>
+          <button class="button is-primary is-fullwidth" @click="submit()">
+            Sign Up
+          </button>
 
           <p class="my-3">Already have an account? <a href="#">Login</a></p>
         </div>
@@ -171,14 +173,14 @@
 </template>
 
 <script>
-import axios from '@/plugins/axios'
+import axios from "@/plugins/axios";
 import {
   required,
   email,
   helpers,
   minLength,
   maxLength,
-  sameAs,
+  sameAs
 } from "vuelidate/lib/validators";
 
 function mobile(value) {
@@ -201,7 +203,7 @@ export default {
       email: "",
       mobile: "",
       first_name: "",
-      last_name: "",
+      last_name: ""
     };
   },
   methods: {
@@ -218,48 +220,49 @@ export default {
           email: this.email,
           mobile: this.mobile,
           first_name: this.first_name,
-          last_name: this.last_name,
+          last_name: this.last_name
         };
 
         axios
-          .post("http://localhost:3000/user/signup", data)
-          .then((res) => {
+          .post("http://localhost:5000/user/signup", data)
+          .then(res => {
             alert("Sign up Success");
           })
-          .catch((err) => {
-            alert(err.response.data.details.message)
+          .catch(err => {
+            console.log("sign error");
+            //alert(err.response.data.details.message);
           });
       }
-    },
+    }
   },
   validations: {
     email: {
       required: required,
-      email: email,
+      email: email
     },
     mobile: {
       required: required,
-      mobile: mobile,
+      mobile: mobile
     },
     password: {
       required: required,
       minLength: minLength(8),
-      complex: complexPassword,
+      complex: complexPassword
     },
     confirm_password: {
-      sameAs: sameAs("password"),
+      sameAs: sameAs("password")
     },
     username: {
       required: required,
       minLength: minLength(5),
-      maxLength: maxLength(20),
+      maxLength: maxLength(20)
     },
     first_name: {
-      required: required,
+      required: required
     },
     last_name: {
-      required: required,
-    },
-  },
+      required: required
+    }
+  }
 };
 </script>

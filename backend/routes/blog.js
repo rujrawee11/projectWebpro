@@ -8,7 +8,10 @@ const { isLoggedIn } = require('../middlewares')
 router = express.Router();
 
 const blogOwner = async (req, res, next) => {
-  if (req.user.role === 'admin') {
+  if (req.user.role === 'employee') {
+    return next()
+  }
+  if (req.user.role === 'lessor') {
     return next()
   }
   const [[blog]] = await pool.query('SELECT * FROM blogs WHERE id=?', [req.params.id])

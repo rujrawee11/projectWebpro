@@ -1,19 +1,19 @@
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap");
 
-  .navbar {
-    margin-top: 0px;
-    padding: 5px;
-    font-family: 'Kanit', sans-serif;
-  }
+.navbar {
+  margin-top: 0px;
+  padding: 5px;
+  font-family: "Kanit", sans-serif;
+}
 
-  #app {
-    font-family: 'Kanit', sans-serif;
-  }
+#app {
+  font-family: "Kanit", sans-serif;
+}
 
-  .hero {
-    font-family: 'Kanit', sans-serif;
-  }
+.hero {
+  font-family: "Kanit", sans-serif;
+}
 </style>
 <template>
   <div id="app">
@@ -49,10 +49,7 @@
         <div class="navbar-start">
           <a class="navbar-item has-text-white" href="../../"> Home </a>
 
-          <div
-            class="navbar-item has-dropdown is-hoverable"
-            
-          >
+          <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link has-text-white" href="../../"> Room </a>
             <div class="navbar-dropdown">
               <a class="navbar-item"> check room price </a>
@@ -77,7 +74,9 @@
               <a class="navbar-item"> record meters </a>
             </div>
           </div>
-          <router-link class="navbar-item has-text-white" :to="`/parcel`"> Parcel </router-link>
+          <router-link class="navbar-item has-text-white" :to="`/parcel`">
+            Parcel
+          </router-link>
         </div>
 
         <div class="navbar-end">
@@ -100,9 +99,11 @@
               >
             </a>
             <div class="navbar-dropdown">
-              <router-link class="navbar-item"  :to="`/manage`">manage account</router-link>
+              <router-link class="navbar-item" :to="`/manage`"
+                >manage account</router-link
+              >
               <router-link to="/user/logout"
-                ><a class="navbar-item">Log out</a></router-link
+                ><a @click="logout" class="navbar-item">Log out</a></router-link
               >
             </div>
           </div>
@@ -135,6 +136,8 @@ export default {
   data() {
     return {
       user: null,
+      username: "",
+      password: ""
     };
   },
   mounted() {
@@ -148,10 +151,17 @@ export default {
       }
     },
     getUser() {
-      axios.get("/user/me").then((res) => {
+      axios.get("/user/me").then(res => {
         this.user = res.data;
       });
     },
-  },
+    logout() {
+      localStorage.clear();
+      this.$router.push({ path: "/signup" });
+      console.log("log out");
+      this.username = "";
+      this.password = "";
+    }
+  }
 };
 </script>
