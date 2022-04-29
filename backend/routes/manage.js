@@ -43,26 +43,26 @@ const upload = multer({ storage: storage });
 }) */
 
 router.get("/manage", isLoggedIn, async function (req, res, next) {
-    const conn = await pool.getConnection()
-    await conn.beginTransaction();
+  const conn = await pool.getConnection()
+  await conn.beginTransaction();
 
-    try {
-        const [rows2, fields2] = await conn.query(
-            'SELECT * FROM `users` WHERE `id` = ?',
-            [req.user.id]
-        )
-        await conn.commit()
-        return res.json({blog: rows2[0], error: null})
-    } catch (err) {
-        await conn.rollback();
-        return res.status(500).json(err)
-    } finally {
-        console.log('finally')
-        conn.release();
-    }
+  try {
+    const [rows2, fields2] = await conn.query(
+      'SELECT * FROM `users` WHERE `id` = ?',
+      [req.user.id]
+    )
+    await conn.commit()
+    return res.json({ blog: rows2[0], error: null })
+  } catch (err) {
+    await conn.rollback();
+    return res.status(500).json(err)
+  } finally {
+    console.log('finally')
+    conn.release();
+  }
 });
 
-router.put("/updateProfile", isLoggedIn,async function (req, res, next) {
+router.put("/updateProfile", isLoggedIn, async function (req, res, next) {
   // Your code here
   console.log(req.body)
   const name = req.body.name
@@ -82,10 +82,12 @@ router.put("/updateProfile", isLoggedIn,async function (req, res, next) {
 
     //console.log(blogs.insertId)
     //console.log(file.path)
-    res.json({ name: name,
-    surname: surname,
-    tel1: tel1,
-    tel2: tel2,})
+    res.json({
+      name: name,
+      surname: surname,
+      tel1: tel1,
+      tel2: tel2,
+    })
     await conn.commit()
   } catch (err) {
     console.log(err)
@@ -99,7 +101,7 @@ router.put("/updateProfile", isLoggedIn,async function (req, res, next) {
 
 });
 
-router.put("/updateEmail", isLoggedIn,async function (req, res, next) {
+router.put("/updateEmail", isLoggedIn, async function (req, res, next) {
   // Your code here
   console.log(req.body)
   const email = req.body.email
@@ -116,7 +118,7 @@ router.put("/updateEmail", isLoggedIn,async function (req, res, next) {
 
     //console.log(blogs.insertId)
     //console.log(file.path)
-    res.json({ email: email})
+    res.json({ email: email })
     await conn.commit()
   } catch (err) {
     console.log(err)
@@ -128,6 +130,38 @@ router.put("/updateEmail", isLoggedIn,async function (req, res, next) {
   }
 
 
+});
+
+router.get("/manageInvoice", isLoggedIn, async function (req, res, next) {
+  const conn = await pool.getConnection()
+  await conn.beginTransaction();
+
+  try {
+    const [rows1, fields1] = await conn.query(
+      'SELECT * FROM `rent_detail`'
+    )
+
+    const [rows2, fields2] = await conn.query(
+      'SELECT * FROM `invoice`'
+    )
+
+    const [rows3, fields3] = await conn.query(
+      'SELECT build, count(room_id) AS count FROM `rent_detail` GROUP BY `build`'
+    )
+
+    const [rows4, fields4] = await conn.query(
+      'SELECT floor FROM `rent_detail` GROUP BY `floor`'
+    )
+    
+    await conn.commit()
+    return res.json({ blog: rows3, room: rows1, floor: rows4, invoice: rows2[0], error: null })
+  } catch (err) {
+    await conn.rollback();
+    return res.status(500).json(err)
+  } finally {
+    console.log('finally')
+    conn.release();
+  }
 });
 
 exports.router = router;

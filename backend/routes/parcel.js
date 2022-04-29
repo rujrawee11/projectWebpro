@@ -106,9 +106,13 @@ router.post("/addParcel", isLoggedIn, parcelAdmin, async function (req, res, nex
   await conn.beginTransaction();
 
   try {
+    const [rows, fields] = await conn.query(
+      'SELECT * FROM `users` WHERE `room_id` = ?',
+      [room_number]
+  )
     const [rows1, fields1] = await conn.query(
-      'INSERT INTO `parcel` (`p_name`, `room_number`, `transport_name`, `sent_date`) VALUES (?, ?, ?, ?)',
-      [p_name, room_number, transport_name, sent_date]
+      'INSERT INTO `parcel` (`p_name`, `room_number`, `transport_name`, `sent_date`, `tenant_id`) VALUES (?, ?, ?, ?, ?)',
+      [p_name, room_number, transport_name, sent_date, rows[0].id]
   )
     const [rows2, fields2] = await conn.query(
       'SELECT * FROM `parcel` WHERE `parcel_id` = ?',
@@ -118,7 +122,7 @@ router.post("/addParcel", isLoggedIn, parcelAdmin, async function (req, res, nex
     return res.json(rows2[0])
   } catch (err) {
     await conn.rollback();
-    return res.status(400).json(err);
+     res.status(400).json('ไม่มีหมายเลขห้องนี้ กรุณากรอกใหม่อีกครั้ง'.toString())
   } finally {
     conn.release();
   }
