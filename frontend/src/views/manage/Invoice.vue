@@ -18,10 +18,18 @@
           </div>
 
           <div class="column is-10">
-            <div class="p-4" style="background-color: #fab15c; color: white">
-              ห้อง XX ชื่อเดือน/ปี
+            <div class="colummns">
+              <div class="column p-4" style="background-color: #fab15c; color: white">
+                ห้อง XX ชื่อเดือน/ปี
+                <button
+              class="delete is-pulled-right"
+              aria-label="close"
+              @click="showInvoice"
+            >
+            </button>
+              </div>
+              
             </div>
-
             <div class="columns">
               <div class="column is-6">
                 <div
@@ -236,6 +244,10 @@ export default {
   },
   created() {},
   watch: {},
-  methods: {},
+  methods: {
+    showInvoice() {
+      this.$router.push({name: 'manageinvoice'});
+    }
+  },
 };
 </script>

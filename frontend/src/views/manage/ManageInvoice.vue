@@ -32,7 +32,7 @@
       </div>
     </div>
     <section class="section mt-1">
-      <div class="columns">
+      <div v-for="(blog) in blogs" :key="blog.build" class="columns">
         <div class="column is-12">
           <div
             class="p-4"
@@ -42,7 +42,7 @@
               font-size: 18px;
             "
           >
-            ชั้นที่
+            ตึก {{ blog.build }}
           </div>
 
           <div class="columns">
@@ -52,16 +52,15 @@
                 style="
                   border: solid 2px #e0e0de;
                   background-color: #f0f0f0;
-                  overflow-wrap: break-word;
                 "
               >
-                <div class="columns ml-5">
+                <div class="columns ml-5"  v-for="(floor) in floor" :key="floor.floor" >
                   <div
                     class="box has-background-info mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
+                    style="height: 10%; width: 15%; cursor: pointer" 
+                    @click="showInvoice" v-for="(room) in room" :key="room.room_id" v-show="room.build == blog.build && floor.floor == room.floor">
+                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold"  >
+                      {{room.room_number}}
                     </div>
                     <div class="columns pt-2">
                       <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
@@ -70,226 +69,10 @@
                         />
                       </figure>
                     </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-danger mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-success mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-info mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-success mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-danger mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered ">X บาท</div>
+                    <div class="has-text-centered">{{blog.count}}</div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="columns">
-        <div class="column is-12">
-          <div
-            class="p-4"
-            style="
-              background-color: #c4c4c4;
-              font-weight: bold;
-              font-size: 18px;
-            "
-          >
-            ชั้นที่
-          </div>
-
-          <div class="columns">
-            <div class="column is-12">
-              <div
-                class="mt-2 p-5"
-                style="
-                  border: solid 2px #e0e0de;
-                  background-color: #f0f0f0;
-                  overflow-wrap: break-word;
-                "
-              >
-                <div class="columns ml-5">
-                  <div
-                    class="box has-background-info mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="showInvoice">
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X20 บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-danger mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-success mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-info mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-success mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered">X บาท</div>
-                  </div>
-
-                  <div
-                    class="box has-background-danger mr-5"
-                    style="height: 10%; width: 15%; cursor: pointer"
-                    @click="show" >
-                    <div class="has-text-centered has-background-light mb-2" style="font-weight: bold">
-                      E201
-                    </div>
-                    <div class="columns pt-2">
-                      <figure class="image is-64x64 my-auto ml-6 mr-3 pt-2">
-                        <img
-                          src="https://www.img.in.th/images/e44ec3a34de3558d4b0fdab7af698364.png"
-                        />
-                      </figure>
-                    </div>
-                    <div class="has-text-centered ">X บาท</div>
-                  </div>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -308,6 +91,9 @@ export default {
   data() {
     return {
       blogs: {},
+      invoice: {},
+      room:{},
+      floor:{},
       comments: [],
       images: [],
       error2: null,
@@ -325,14 +111,30 @@ export default {
       password: "",
       showProfileModal: false,
       showEmailModal: false,
+      count: 0
     };
   },
   mounted() {
     this.getBlogDetail();
+    
   },
   created() {},
   watch: {},
   methods: {
+    getBlogDetail() {
+      axios
+        .get(`http://localhost:5000/manageInvoice`)
+        .then((response) => {
+          this.blogs = response.data.blog;
+          this.room = response.data.room;
+          this.floor = response.data.floor;
+          this.invoice = response.data.invoice;
+          
+        })
+        .catch((error) => {
+          this.error2 = error.response.data.message;
+        });
+    },
     showInvoice() {
       this.$router.push({name: 'invoice'});
     }
